@@ -131,6 +131,9 @@ class Helper(Cog):
     @Cog.listener()
     async def on_ready(self):
         if not self.bot.ready:
+            view = EmbedSpawner()
+            self.bot.add_view(view, message_id=1082479515319664752)
+
             self.bot.cogs_ready.ready_up("Helper")
 
 
