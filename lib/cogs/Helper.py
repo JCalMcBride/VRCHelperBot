@@ -2,7 +2,7 @@ import json
 
 import discord
 from discord import ButtonStyle, NotFound
-from discord.ext.commands import command, Cog
+from discord.ext.commands import command, Cog, has_permissions
 
 
 class PageButtons(discord.ui.View):
@@ -70,10 +70,17 @@ class PageButtons(discord.ui.View):
         for item in self.children:
             item.disabled = True
 
-        await interaction.user.add_roles(discord.Object(id=1082476391615955046),
-                                         reason="User has completed the introduction.")
+        try:
+            await interaction.user.add_roles(discord.Object(id=1082476391615955046),
+                                             reason="User has completed the introduction.")
+        except Exception as e:
+            await interaction.response.edit_message(content="An error occurred while trying to add the role to you,"
+                                                            " please contact a staff member.", embed=None, view=None)
 
-        await interaction.response.edit_message(content="Welcome to the server!", embed=None, view=self)
+        try:
+            await interaction.response.edit_message(content="Welcome to the server!", embed=None, view=self)
+        except NotFound:
+            self.stop()
 
 
 class EmbedSpawner(discord.ui.View):
@@ -112,20 +119,13 @@ class Helper(Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @has_permissions(manage_messages=True)
     @command(name='setup', aliases=['s'])
     async def setup_embed(self, ctx):
         """Sets up the embed spawner."""
         view = EmbedSpawner()
         await ctx.send("Welcome to the Vaulted Relic Community server, please follow the steps shown in this tutorial. "
                        "Start by clicking begin tutorial.", view=view)
-
-    @command(name='reload_embeds', aliases=['re'])
-    async def reload_embed_info(self, ctx):
-        """Reloads embed info."""
-        with open('data/embed_data.json', 'r', encoding='utf-8') as f:
-            self.embed_data = json.load(f)
-
-        await ctx.send("Embed data has been reloaded.")
 
     @Cog.listener()
     async def on_ready(self):
