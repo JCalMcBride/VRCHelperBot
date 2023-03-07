@@ -88,7 +88,7 @@ class EmbedSpawner(discord.ui.View):
         self.embed_data = None
         with open('data/embed_data.json', 'r', encoding='utf-8') as f:
             self.embed_data = json.load(f)
-        super().__init__()
+        super().__init__(timeout=None)
 
     @discord.ui.button(
         label="Begin Tutorial",
@@ -124,7 +124,8 @@ class Helper(Cog):
     async def setup_embed(self, ctx):
         """Sets up the embed spawner."""
         view = EmbedSpawner()
-        await ctx.send("Welcome to the Vaulted Relic Community server, please follow the steps shown in this tutorial. "
+        server_name = ctx.guild.name
+        await ctx.send(f"Welcome to the {server_name} server, please follow the steps shown in this tutorial. "
                        "Start by clicking begin tutorial.", view=view)
 
     @Cog.listener()
