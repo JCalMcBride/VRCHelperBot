@@ -71,7 +71,12 @@ class PageButtons(discord.ui.View):
             item.disabled = True
 
         try:
-            await interaction.user.add_roles(discord.Object(id=780381645181681674),
+            if interaction.guild_id == 780376195182493707:
+                role_id = 780381645181681674
+            elif interaction.guild_id == 780199960980750376:
+                role_id = 780202057885286440
+
+            await interaction.user.add_roles(discord.Object(id=role_id),
                                              reason="User has completed the introduction.")
         except Exception as e:
             await interaction.response.edit_message(content="An error occurred while trying to add the role to you,"
