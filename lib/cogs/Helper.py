@@ -71,7 +71,7 @@ class PageButtons(discord.ui.View):
             item.disabled = True
 
         try:
-            await interaction.user.add_roles(discord.Object(id=1082476391615955046),
+            await interaction.user.add_roles(discord.Object(id=780381645181681674),
                                              reason="User has completed the introduction.")
         except Exception as e:
             await interaction.response.edit_message(content="An error occurred while trying to add the role to you,"
