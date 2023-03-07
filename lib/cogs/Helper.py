@@ -140,7 +140,7 @@ class Helper(Cog):
             self.bot.add_view(view_vrc, message_id=1082479515319664752)
 
             view_vrr = EmbedSpawner()
-            self.bod.add_view(view_vrr, message_id=1082486372100747264)
+            self.bot.add_view(view_vrr, message_id=1082486372100747264)
 
             self.bot.cogs_ready.ready_up("Helper")
 
