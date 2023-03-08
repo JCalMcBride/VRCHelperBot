@@ -66,7 +66,7 @@ class Moderation(Cog):
                                f"Please complete the tutorial to receive the role "
                                f"and gain access to the rest of the server. "
                                f"Thank you! If that is not why you are asking for help, please continue.",
-                               delete_after=10)
+                               delete_after=20)
             self.notified_users.append(user.id)
 
     @Cog.listener()
