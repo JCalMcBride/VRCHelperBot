@@ -30,7 +30,7 @@ class Ready(object):
 
 
 def get_prefix(bot, message):
-    prefix_list = ['v!', '--']
+    prefix_list = ['v!']
     if not message.guild:
         prefix_list.append('')
 
