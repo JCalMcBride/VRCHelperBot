@@ -53,6 +53,9 @@ class Moderation(Cog):
             if message.channel.id in self.deletion_list:
                 await message.delete()
 
+            if message.content[0] == "?":
+                return
+
             await self.relay_message(message, message.attachments, message.channel.id, self.relay_dict[message.channel.id])
 
     @Cog.listener()
