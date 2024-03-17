@@ -1,3 +1,6 @@
+import json
+import os
+
 import discord
 from discord.ext.commands import command, Cog, has_permissions
 from more_itertools import chunked
@@ -25,6 +28,51 @@ class Moderation(Cog):
         self.introduction_dict = {780376195182493707: 1082479236872405073,
                                   780199960980750376: 1082486097034092604}
         self.notified_users = []
+
+        self.role_data_file = "role_data.json"
+        self.role_data = {}
+
+        # Load role data from the JSON file
+        if os.path.exists(self.role_data_file):
+            try:
+                with open(self.role_data_file, "r") as f:
+                    self.role_data = json.load(f)
+            except json.JSONDecodeError:
+                print("Error: Invalid JSON file. Resetting role data.")
+                self.role_data = {}
+
+
+    async def save_user_roles(self, member):
+        if member.guild.id == 780376195182493707:
+            role_ids = [role.id for role in member.roles if role != member.guild.default_role]
+            self.role_data[str(member.id)] = role_ids
+            try:
+                with open(self.role_data_file, "w") as f:
+                    json.dump(self.role_data, f)
+            except Exception as e:
+                print(f"Error saving role data: {e}")
+
+
+    async def readd_user_roles(self, member):
+        if member.guild.id == 780376195182493707 and str(member.id) in self.role_data:
+            role_ids = self.role_data[str(member.id)]
+            roles = [role for role in member.guild.roles if role.id in role_ids]
+            try:
+                await member.add_roles(*roles)
+                self.role_data.pop(str(member.id), None)  # Remove user's roles from the list
+                with open(self.role_data_file, "w") as f:
+                    json.dump(self.role_data, f)
+            except Exception as e:
+                print(f"Error adding roles to {member.name}: {e}")
+
+
+    @Cog.listener()
+    async def on_member_remove(self, member):
+        await self.save_user_roles(member)
+
+    @Cog.listener()
+    async def on_member_join(self, member):
+        await self.readd_user_roles(member)
 
     async def relay_message(self, message, attachments, from_channel_id, to_channel_id):
         channel = self.bot.get_channel(to_channel_id)
