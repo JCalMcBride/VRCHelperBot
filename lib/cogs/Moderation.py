@@ -57,15 +57,14 @@ class Moderation(Cog):
         if member.guild.id == 780376195182493707 and str(member.id) in self.role_data:
             role_ids = self.role_data[str(member.id)]
             roles = [role for role in member.guild.roles if role.id in role_ids]
-            try:
-                await member.add_roles(*roles)
-                self.role_data.pop(str(member.id), None)  # Remove user's roles from the list
-                with open(self.role_data_file, "w") as f:
-                    json.dump(self.role_data, f)
-            except Exception as e:
-                print(f"Error adding roles to {member.name}: {e}")
-
-
+            for role in roles:
+                try:
+                    await member.add_roles(role)
+                except Exception as e:
+                    print(f"Error adding {role} roles to {member.name}: {e}")
+            self.role_data.pop(str(member.id), None)  # Remove user's roles from the list
+            with open(self.role_data_file, "w") as f:
+                json.dump(self.role_data, f)
     @Cog.listener()
     async def on_member_remove(self, member):
         await self.save_user_roles(member)
