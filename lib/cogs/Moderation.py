@@ -44,7 +44,7 @@ class Moderation(Cog):
 
     async def save_user_roles(self, member):
         if member.guild.id == 780376195182493707:
-            role_ids = [role.id for role in member.roles if role != member.guild.default_role]
+            role_ids = [role.id for role in member.roles]
             self.role_data[str(member.id)] = role_ids
             try:
                 with open(self.role_data_file, "w") as f:
