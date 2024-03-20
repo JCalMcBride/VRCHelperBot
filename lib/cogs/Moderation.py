@@ -41,6 +41,48 @@ class Moderation(Cog):
                 print("Error: Invalid JSON file. Resetting role data.")
                 self.role_data = {}
 
+    @command(name="addrestricted")
+    @has_permissions(manage_roles=True)
+    async def add_restricted_role(self, ctx, user: str):
+        role_id = 1175080632855056404
+        role = ctx.guild.get_role(role_id)
+
+        if role is None:
+            await ctx.send(f"Role with ID {role_id} not found.")
+            return
+
+        user_id = None
+        if user.startswith("<@") and user.endswith(">"):
+            user_id = int(user[2:-1].replace("!", ""))
+        else:
+            try:
+                user_id = int(user)
+            except ValueError:
+                await ctx.send("Invalid user ID or mention.")
+                return
+
+        guild_member = ctx.guild.get_member(user_id)
+
+        if guild_member is not None:
+            if role in guild_member.roles:
+                await ctx.send(f"<@{user_id}> already has the role.")
+            else:
+                await guild_member.add_roles(role)
+                await ctx.send(f"Added the role to <@{user_id}>.")
+        else:
+            if str(user_id) in self.role_data:
+                if role_id not in self.role_data[str(user_id)]:
+                    self.role_data[str(user_id)].append(role_id)
+            else:
+                self.role_data[str(user_id)] = [role_id]
+            try:
+                with open(self.role_data_file, "w") as f:
+                    json.dump(self.role_data, f)
+            except Exception as e:
+                print(f"Error saving role data: {e}")
+            await ctx.send(f"User <@{user_id}> will be given the restricted role when they join.")
+
+
 
     async def save_user_roles(self, member):
         if member.guild.id == 780376195182493707:
