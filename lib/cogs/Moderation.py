@@ -43,7 +43,7 @@ class Moderation(Cog):
 
 
     async def save_user_roles(self, member):
-        if member.guild.id == 1134552089977159690:
+        if member.guild.id == 780376195182493707:
             role_ids = [role.id for role in member.roles][1:]
             self.role_data[str(member.id)] = role_ids
             try:
@@ -54,7 +54,7 @@ class Moderation(Cog):
 
 
     async def readd_user_roles(self, member):
-        if member.guild.id == 1134552089977159690 and str(member.id) in self.role_data:
+        if member.guild.id == 780376195182493707 and str(member.id) in self.role_data:
             role_ids = self.role_data[str(member.id)]
             roles = [role for role in member.guild.roles if role.id in role_ids]
             for role in roles:
