@@ -96,7 +96,7 @@ class PageButtons(discord.ui.View):
             self.stop()
 
     @discord.ui.button(
-        emoji="�",
+        emoji="🛠️",
         style=ButtonStyle.green,
         custom_id=f"tools_button"
     )
