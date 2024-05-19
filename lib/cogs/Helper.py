@@ -87,7 +87,7 @@ class PageButtons(discord.ui.View):
                                                             " please contact a staff member.", embed=None, view=None)
 
         try:
-            await interaction.response.edit_message(content="Welcome to the server!\n"
+            await interaction.response.edit_message(content="Welcome to the server!\n\n"
                                                             "If you change your mind and would like to disable access "
                                                             "to the communtiy channels, just go through "
                                                             "this again and select the other option.",
