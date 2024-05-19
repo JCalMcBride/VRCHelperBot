@@ -12,18 +12,22 @@ class PageButtons(discord.ui.View):
         self.current_page = 0
         super().__init__()
         self.thumbs_up_button.disabled = True
+        self.tools_button.disabled = True
         self.previous_page_button.disabled = True
 
-    def button_handler(self):
+    def button_handler(self, guild_id: int):
         if self.current_page == self.max_page:
             self.next_page_button.disabled = True
             self.thumbs_up_button.disabled = False
+            if guild_id == 780376195182493707:
+                self.tools_button.disabled = False
         elif self.current_page == 0:
             self.previous_page_button.disabled = True
         else:
             self.next_page_button.disabled = False
             self.previous_page_button.disabled = False
             self.thumbs_up_button.disabled = True
+            self.tools_button.disabled = True
 
     @discord.ui.button(
         label="Previous Page",
@@ -36,7 +40,7 @@ class PageButtons(discord.ui.View):
         else:
             self.current_page -= 1
 
-        self.button_handler()
+        self.button_handler(interaction.guild_id)
 
         try:
             await interaction.response.edit_message(embed=self.embeds[self.current_page], view=self)
@@ -54,7 +58,7 @@ class PageButtons(discord.ui.View):
         else:
             self.current_page += 1
 
-        self.button_handler()
+        self.button_handler(interaction.guild_id)
 
         try:
             await interaction.response.edit_message(embed=self.embeds[self.current_page], view=self)
@@ -83,7 +87,38 @@ class PageButtons(discord.ui.View):
                                                             " please contact a staff member.", embed=None, view=None)
 
         try:
-            await interaction.response.edit_message(content="Welcome to the server!", embed=None, view=self)
+            await interaction.response.edit_message(content="Welcome to the server! "
+                                                            "If you change your mind and would like to disable access "
+                                                            "to the communtiy channels, just go through "
+                                                            "this again and select the other option.",
+                                                    embed=None, view=self)
+        except NotFound:
+            self.stop()
+
+    @discord.ui.button(
+        emoji="�",
+        style=ButtonStyle.green,
+        custom_id=f"tools_button"
+    )
+    async def tools_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        for item in self.children:
+            item.disabled = True
+
+        try:
+            if interaction.guild_id == 780376195182493707:
+                role_id = 1229377208926077008
+
+            await interaction.user.add_roles(discord.Object(id=role_id),
+                                             reason="User has completed the introduction.")
+        except Exception as e:
+            await interaction.response.edit_message(content="An error occurred while trying to add the role to you,"
+                                                            " please contact a staff member.", embed=None, view=None)
+
+        try:
+            await interaction.response.edit_message(content="Welcome to the server!"
+                                                            "If you ever want to have access to the community channels, "
+                                                            "just go through this again and select the other option.",
+                                                    embed=None, view=self)
         except NotFound:
             self.stop()
 
