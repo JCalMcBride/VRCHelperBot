@@ -82,6 +82,12 @@ class PageButtons(discord.ui.View):
 
             await interaction.user.add_roles(discord.Object(id=role_id),
                                              reason="User has completed the introduction.")
+
+            if interaction.guild_id == 780376195182493707:
+                # Remove tools role if it exists
+                if discord.Object(id=1229377208926077008) in interaction.user.roles:
+                    await interaction.user.remove_roles(discord.Object(id=1229377208926077008))
+
         except Exception as e:
             await interaction.response.edit_message(content="An error occurred while trying to add the role to you,"
                                                             " please contact a staff member.", embed=None, view=None)
@@ -108,8 +114,12 @@ class PageButtons(discord.ui.View):
             if interaction.guild_id == 780376195182493707:
                 role_id = 1229377208926077008
 
-            await interaction.user.add_roles(discord.Object(id=role_id),
-                                             reason="User has completed the introduction.")
+                await interaction.user.add_roles(discord.Object(id=role_id),
+                                                 reason="User has completed the introduction.")
+
+                # Remove burners role if it exists
+                if discord.Object(id=780381645181681674) in interaction.user.roles:
+                    await interaction.user.remove_roles(discord.Object(id=780381645181681674))
         except Exception as e:
             await interaction.response.edit_message(content="An error occurred while trying to add the role to you,"
                                                             " please contact a staff member.", embed=None, view=None)
