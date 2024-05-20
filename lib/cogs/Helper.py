@@ -79,14 +79,20 @@ class PageButtons(discord.ui.View):
                 role_id = 780381645181681674
             elif interaction.guild_id == 780199960980750376:
                 role_id = 780202057885286440
+            else:
+                return
 
-            await interaction.user.add_roles(discord.Object(id=role_id),
+            role = discord.utils.get(interaction.guild.roles, id=role_id)
+
+            await interaction.user.add_roles(role,
                                              reason="User has completed the introduction.")
 
             if interaction.guild_id == 780376195182493707:
                 # Remove tools role if it exists
-                if discord.Object(id=1229377208926077008) in interaction.user.roles:
-                    await interaction.user.remove_roles(discord.Object(id=1229377208926077008))
+
+                tools_role = discord.utils.get(interaction.guild.roles, id=1229377208926077008)
+                if tools_role in interaction.user.roles:
+                    await interaction.user.remove_roles(tools_role)
 
         except Exception as e:
             await interaction.response.edit_message(content="An error occurred while trying to add the role to you,"
@@ -114,12 +120,16 @@ class PageButtons(discord.ui.View):
             if interaction.guild_id == 780376195182493707:
                 role_id = 1229377208926077008
 
-                await interaction.user.add_roles(discord.Object(id=role_id),
+                role = discord.utils.get(interaction.guild.roles, id=role_id)
+
+                await interaction.user.add_roles(role,
                                                  reason="User has completed the introduction.")
 
+                burner_role = discord.utils.get(interaction.guild.roles, id=780381645181681674)
+
                 # Remove burners role if it exists
-                if discord.Object(id=780381645181681674) in interaction.user.roles:
-                    await interaction.user.remove_roles(discord.Object(id=780381645181681674))
+                if burner_role in interaction.user.roles:
+                    await interaction.user.remove_roles(burner_role)
         except Exception as e:
             await interaction.response.edit_message(content="An error occurred while trying to add the role to you,"
                                                             " please contact a staff member.", embed=None, view=None)
