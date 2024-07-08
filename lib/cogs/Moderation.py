@@ -90,8 +90,6 @@ class Moderation(Cog):
                 print(f"Error saving role data: {e}")
             await ctx.send(f"User <@{user_id}> will be given the restricted role when they join.")
 
-
-
     async def save_user_roles(self, member):
         if member.guild.id == 780376195182493707:
             role_ids = [role.id for role in member.roles][1:]
@@ -102,11 +100,17 @@ class Moderation(Cog):
             except Exception as e:
                 print(f"Error saving role data: {e}")
 
-
     async def readd_user_roles(self, member):
         if member.guild.id == 780376195182493707 and str(member.id) in self.role_data:
             role_ids = self.role_data[str(member.id)]
+            burners_role_id = 780381645181681674
+            restricted_role_id = 1175080632855056404
+
+            if burners_role_id in role_ids and restricted_role_id in role_ids:
+                role_ids.remove(burners_role_id)
+
             roles = [role for role in member.guild.roles if role.id in role_ids]
+
             for role in roles:
                 try:
                     await member.add_roles(role)
@@ -115,6 +119,7 @@ class Moderation(Cog):
             self.role_data.pop(str(member.id), None)  # Remove user's roles from the list
             with open(self.role_data_file, "w") as f:
                 json.dump(self.role_data, f)
+
     @Cog.listener()
     async def on_member_remove(self, member):
         await self.save_user_roles(member)
@@ -153,7 +158,8 @@ class Moderation(Cog):
             if message.content[0] == "?":
                 return
 
-            await self.relay_message(message, message.attachments, message.channel.id, self.relay_dict[message.channel.id])
+            await self.relay_message(message, message.attachments, message.channel.id,
+                                     self.relay_dict[message.channel.id])
 
     @Cog.listener()
     async def on_typing(self, channel, user, when):
