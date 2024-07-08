@@ -45,7 +45,9 @@ class Moderation(Cog):
     @has_permissions(manage_roles=True)
     async def add_restricted_role(self, ctx, user: str):
         role_id = 1175080632855056404
+        burners_role_id = 780381645181681674
         role = ctx.guild.get_role(role_id)
+        burners_role = ctx.guild.get_role(burners_role_id)
 
         if role is None:
             await ctx.send(f"Role with ID {role_id} not found.")
@@ -69,10 +71,16 @@ class Moderation(Cog):
             else:
                 await guild_member.add_roles(role)
                 await ctx.send(f"Added the role to <@{user_id}>.")
+
+            if burners_role in guild_member.roles:
+                await guild_member.remove_roles(ctx.guild.get_role(burners_role))
         else:
             if str(user_id) in self.role_data:
                 if role_id not in self.role_data[str(user_id)]:
                     self.role_data[str(user_id)].append(role_id)
+
+                if burners_role_id in self.role_data[str(user_id)]:
+                    self.role_data[str(user_id)].remove(burners_role_id)
             else:
                 self.role_data[str(user_id)] = [role_id]
             try:
