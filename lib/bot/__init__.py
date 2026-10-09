@@ -47,7 +47,7 @@ class Bot(BotBase):
         super().__init__(
             command_prefix=get_prefix,
             owner_ids=OWNER_IDS,
-            intents=Intents.all()
+            intents=Intents.default(),
         )
 
         self.tree.on_error = self.on_tree_error
